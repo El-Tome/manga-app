@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -41,6 +43,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    /**
+     * @var Collection<int, ScanRead>
+     */
+    #[ORM\OneToMany(targetEntity: ScanRead::class, mappedBy: 'id_user', orphanRemoval: true)]
+    private Collection $scanReads;
+
+    public function __construct()
+    {
+        $this->scanReads = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -147,6 +160,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ScanRead>
+     */
+    public function getScanReads(): Collection
+    {
+        return $this->scanReads;
+    }
+
+    public function addScanRead(ScanRead $scanRead): static
+    {
+        if (!$this->scanReads->contains($scanRead)) {
+            $this->scanReads->add($scanRead);
+            $scanRead->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScanRead(ScanRead $scanRead): static
+    {
+        if ($this->scanReads->removeElement($scanRead)) {
+            // set the owning side to null (unless already changed)
+            if ($scanRead->getIdUser() === $this) {
+                $scanRead->setIdUser(null);
+            }
+        }
 
         return $this;
     }
