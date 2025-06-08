@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ScanRead{% endblock %}
+
+{% block body %}
+    <h1>ScanRead</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ scan_read.id }}</td>
+            </tr>
+            <tr>
+                <th>LastChapterRead</th>
+                <td>{{ scan_read.lastChapterRead }}</td>
+            </tr>
+            <tr>
+                <th>DateLastChapRead</th>
+                <td>{{ scan_read.DateLastChapRead ? scan_read.DateLastChapRead|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_scan_read_index') }}">back to list</a>
+
+    <a href="{{ path('app_scan_read_edit', {'id': scan_read.id}) }}">edit</a>
+
+    {{ include('scan_read/_delete_form.html.twig') }}
+{% endblock %}

@@ -42,7 +42,7 @@ final class ScanController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_scan_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_scan_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Scan $scan): Response
     {
         return $this->render('scan/show.html.twig', [
@@ -50,7 +50,7 @@ final class ScanController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_scan_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_scan_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, Scan $scan, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ScanForm::class, $scan);
@@ -68,7 +68,7 @@ final class ScanController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_scan_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_scan_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Scan $scan, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$scan->getId(), $request->getPayload()->getString('_token'))) {

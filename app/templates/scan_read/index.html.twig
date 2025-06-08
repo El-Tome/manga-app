@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ScanRead index{% endblock %}
+
+{% block body %}
+    <h1>ScanRead index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>LastChapterRead</th>
+                <th>DateLastChapRead</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for scan_read in scan_reads %}
+            <tr>
+                <td>{{ scan_read.id }}</td>
+                <td>{{ scan_read.lastChapterRead }}</td>
+                <td>{{ scan_read.DateLastChapRead ? scan_read.DateLastChapRead|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_scan_read_show', {'id': scan_read.id}) }}">show</a>
+                    <a href="{{ path('app_scan_read_edit', {'id': scan_read.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_scan_read_new') }}">Create new</a>
+{% endblock %}

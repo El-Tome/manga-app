@@ -16,28 +16,13 @@ class ScanReadRepository extends ServiceEntityRepository
         parent::__construct($registry, ScanRead::class);
     }
 
-    //    /**
-    //     * @return ScanRead[] Returns an array of ScanRead objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ScanRead
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findAllByUser($user)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.id_user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
