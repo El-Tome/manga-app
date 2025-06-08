@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+            {% endfor %}
+
+            {% for flash_success in app.flashes('success') %}
+                <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+            {% endfor %}
+
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h3 mb-0">Connection</h1>
+                </div>
+                <div class="card-body">
+                    {{ form_start(loginForm, {'action': path('app_login'), 'method': 'POST'}) }}
+                        
+                        <div class="mb-3">
+                            {{ form_label(loginForm.email) }}
+                            {{ form_widget(loginForm.email) }}
+                            {{ form_errors(loginForm.email) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(loginForm.password) }}
+                            {{ form_widget(loginForm.password) }}
+                            {{ form_errors(loginForm.password) }}
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <div class="d-grid">
+                            {{ form_widget(loginForm.submit) }}
+                        </div>
+
+                    {{ form_end(loginForm) }}
+
+                    <div class="text-center mt-3">
+                        <p>Haven't an account ? <a href="{{ path('app_register') }}">Register</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

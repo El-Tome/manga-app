@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -25,7 +24,11 @@ class RegistrationController extends AbstractController
     {}
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(
+        Request                     $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface      $entityManager
+    ): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationForm::class, $user);
@@ -41,6 +44,8 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $request->getSession()->set('verify_user_id', $user->getId());
+
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
@@ -50,9 +55,7 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            // do anything else you need here, like send an email
-
-            return $this->redirectToRoute('_preview_error');
+            return $this->redirectToRoute('app_please_verify_email');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -66,25 +69,46 @@ class RegistrationController extends AbstractController
        $id = $request->get('id');
 
     if (!$id) {
-        $this->addFlash('verify_email_error', 'Lien invalide.');
+        $this->addFlash('verify_email_error', 'Invalid link.');
         return $this->redirectToRoute('app_register');
     }
 
     $user = $this->userRepository->find($id);
 
     if (!$user) {
-        $this->addFlash('verify_email_error', 'Utilisateur introuvable.');
+        $this->addFlash('verify_email_error', 'User not found.');
         return $this->redirectToRoute('app_register');
     }
 
-    try {
         $this->emailVerifier->handleEmailConfirmation($request, $user);
-    } catch (VerifyEmailExceptionInterface $exception) {
-        $this->addFlash('verify_email_error', $exception->getReason());
-        return $this->redirectToRoute('app_register');
+
+        $this->addFlash('success', 'Your email address has been verified.');
+        $request->getSession()->remove('verify_user_id');
+
+        return $this->redirectToRoute('app_login');
     }
 
-    $this->addFlash('success', 'Votre e-mail a bien été vérifié.');
-    return $this->redirectToRoute('app_login');
+    #[Route('/check/email', name: 'app_please_verify_email')]
+    public function verifyEmail(Request $request): Response
+    {
+        $id = $request->getSession()->get('verify_user_id');
+
+        if (!$id) {
+            return $this->redirectToRoute('app_register');
+        }
+
+        $user = $this->userRepository->find($id);
+
+        if (!$user) {
+            return $this->redirectToRoute('app_register');
+        }
+
+        if ($user->isVerified()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('registration/verify_email.html.twig', [
+            'user' => $user,
+        ]);
     }
 }
