@@ -15,7 +15,7 @@ class SecurityController extends AbstractController
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
          if ($this->getUser()) {
-             // return $this->redirectToRoute('app_home');
+              return $this->redirectToRoute('app_home');
          }
 
         // Créer le formulaire

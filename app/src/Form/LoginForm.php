@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
@@ -42,6 +43,11 @@ class LoginForm extends AbstractType
                         'message' => 'please enter your password',
                     ]),
                 ],
+            ])
+            ->add('rememberMe', CheckboxType::class, [
+                'label' => 'Keep me logged in',
+                'mapped' => false,
+                'required' => false,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Login',

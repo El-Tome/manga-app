@@ -20,6 +20,12 @@ security:
                 enable_csrf: true
                 username_parameter: login_form[email]
                 password_parameter: login_form[password]
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path: /
+                always_remember_me: false
+                remember_me_parameter: login_form[rememberMe]
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -34,5 +40,4 @@ security:
         - { path: ^/check/email,  roles: PUBLIC_ACCESS }
         - { path: ^/verify/email, roles: PUBLIC_ACCESS }
 
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
-
+        - { path: ^/, roles: IS_AUTHENTICATED_REMEMBERED }
