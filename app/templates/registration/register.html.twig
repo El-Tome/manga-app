@@ -1,25 +1,108 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register - MangaApp{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="main-content">
+                <div class="text-center mb-4">
+                    <h1 class="h3 mb-3 fw-bold" style="background: var(--manga-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        <i class="bi bi-person-plus-fill me-2"></i>Register
+                    </h1>
+                </div>
 
-    <h1>Register</h1>
+                {% for flash_error in app.flashes('verify_email_error') %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ flash_error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
 
-    {{ form_errors(registrationForm) }}
+                {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.firstName) }}
-        {{ form_row(registrationForm.lastName) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+                {{ form_start(registrationForm, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+                    <div class="mb-3">
+                        <label for="{{ registrationForm.email.vars.id }}" class="form-label fw-medium">
+                            <i class="bi bi-envelope me-2"></i>Email
+                        </label>
+                        {{ form_widget(registrationForm.email, {
+                            'attr': {
+                                'class': 'form-control form-control-lg'
+                            }
+                        }) }}
+                        {{ form_errors(registrationForm.email) }}
+                    </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ registrationForm.firstName.vars.id }}" class="form-label fw-medium">
+                                <i class="bi bi-person me-2"></i>First name
+                            </label>
+                            {{ form_widget(registrationForm.firstName, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg'
+                                }
+                            }) }}
+                            {{ form_errors(registrationForm.firstName) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ registrationForm.lastName.vars.id }}" class="form-label fw-medium">
+                                <i class="bi bi-person me-2"></i>Last name
+                            </label>
+                            {{ form_widget(registrationForm.lastName, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg'
+                                }
+                            }) }}
+                            {{ form_errors(registrationForm.lastName) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ registrationForm.plainPassword.vars.id }}" class="form-label fw-medium">
+                            <i class="bi bi-lock me-2"></i>Password
+                        </label>
+                        {{ form_widget(registrationForm.plainPassword, {
+                            'attr': {
+                                'class': 'form-control form-control-lg'
+                            }
+                        }) }}
+                        {{ form_errors(registrationForm.plainPassword) }}
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            {{ form_widget(registrationForm.agreeTerms, {
+                                'attr': {
+                                    'class': 'form-check-input'
+                                }
+                            }) }}
+                            <label class="form-check-label" for="{{ registrationForm.agreeTerms.vars.id }}">
+                                I accept the <a href="#" class="text-decoration-none">conditions of use</a>
+                            </label>
+                        </div>
+                        {{ form_errors(registrationForm.agreeTerms) }}
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-person-plus me-2"></i>Register
+                        </button>
+                    </div>
+                {{ form_end(registrationForm) }}
+
+                <div class="text-center">
+                    <p class="text-muted mb-0">
+                        Already have an account?
+                        <a href="{{ path('app_login') }}" class="text-decoration-none fw-medium" style="color: var(--manga-primary);">
+                            Login
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
